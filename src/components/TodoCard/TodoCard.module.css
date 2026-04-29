@@ -1,0 +1,31 @@
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px 20px;
+  border-left: 4px solid #3b82f6;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.08);
+}
+
+.cardCompleted {
+  border-left-color: #93c5fd;
+  opacity: 0.65;
+}
+
+.title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e3a5f;
+  margin: 0 0 4px 0;
+}
+
+.titleCompleted {
+  text-decoration: line-through;
+  color: #94a3b8;
+}
+
+.description {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.4;
+}

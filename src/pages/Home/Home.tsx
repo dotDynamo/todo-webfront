@@ -1,30 +1,33 @@
-import React from 'react'
-import { Link, useNavigate } from 'react-router-dom';
+import type { Todo } from '../../types/todo';
+import TodoCard from '../../components/TodoCard/TodoCard';
+import styles from './Home.module.css';
+
+const todos: Todo[] = [];
 
 const Home = () => {
-    //variables
-    const navigate = useNavigate();
-    //functions
-    const navigateToSearch = () => {
-        navigate("/search")
-    }
+  return (
+    <div className={styles.container}>
+      <header className={styles.header}>
+        <h1 className={styles.title}>Mis Tareas</h1>
+      </header>
 
-    const navigateToTasks = (id: string) => {
-        navigate
-    }
-    //use effects
+      {todos.length === 0 ? (
+        <p className={styles.emptyState}>No hay tareas</p>
+      ) : (
+        <ul className={styles.list}>
+          {todos.map((todo) => (
+            <li key={todo.id}>
+              <TodoCard todo={todo} />
+            </li>
+          ))}
+        </ul>
+      )}
 
-    //render
-    return(
-        <div>
-           <div>
-            <Link to="/about">About</Link>
-            <button onClick={navigateToSearch}>Go to search</button>
-            <button onClick={() => navigateToTasks("123")}>Go to task 123</button>
-           </div>
-           <h1>Dashboard</h1>
-        </div>
-    );
+      <button className={styles.fab} aria-label="Nueva tarea">
+        +
+      </button>
+    </div>
+  );
 };
 
 export default Home;
