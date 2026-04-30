@@ -1,18 +1,24 @@
-export const validateToken = async () => {
-  const token = localStorage.getItem("token");
+import axios, { type AxiosInstance } from 'axios';
 
-  const response = await fetch("http://localhost:8080/auth/validate", {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+const requiredEnv = (value: string | undefined, name: string): string => {
+  if (!value) throw new Error(`Missing environment variable: ${name}`);
+  return value;
+};
+
+let apiClient: AxiosInstance | null = null;
+
+export const getApiClient = () => {
+  if (apiClient) return apiClient;
+
+  apiClient = axios.create({
+    baseURL: requiredEnv(import.meta.env.VITE_API_URL, 'VITE_API_URL'),
+    timeout: 5000,
   });
 
-  const data = await response.text();
+  apiClient.interceptors.request.use((config) => {
+    config.headers['Content-Type'] = 'application/json';
+    return config;
+  });
 
-  if (!response.ok) {
-    throw new Error(data);
-  }
-
-  return data;
+  return apiClient;
 };
