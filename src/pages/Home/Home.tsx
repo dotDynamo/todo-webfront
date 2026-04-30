@@ -1,10 +1,16 @@
+import { useEffect, useState } from 'react';
 import type { Todo } from '../../types/todo';
+import { getTodos } from '../../services/todoService';
 import TodoCard from '../../components/TodoCard/TodoCard';
 import styles from './Home.module.css';
 
-const todos: Todo[] = [];
-
 const Home = () => {
+  const [todos, setTodos] = useState<Todo[]>([]);
+
+  useEffect(() => {
+    getTodos().then(setTodos).catch(console.error);
+  }, []);
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>
