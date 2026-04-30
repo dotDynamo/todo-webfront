@@ -1,24 +1,20 @@
-import axios, { type AxiosInstance } from 'axios';
+import axios from 'axios';
 
-const requiredEnv = (value: string | undefined, name: string): string => {
-  if (!value) throw new Error(`Missing environment variable: ${name}`);
-  return value;
-};
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+  timeout: 5000,
+});
 
-let apiClient: AxiosInstance | null = null;
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
 
-export const getApiClient = () => {
-  if (apiClient) return apiClient;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
 
-  apiClient = axios.create({
-    baseURL: requiredEnv(import.meta.env.VITE_API_URL, 'VITE_API_URL'),
-    timeout: 5000,
-  });
+  config.headers['Content-Type'] = 'application/json';
 
-  apiClient.interceptors.request.use((config) => {
-    config.headers['Content-Type'] = 'application/json';
-    return config;
-  });
+  return config;
+});
 
-  return apiClient;
-};
+export default api;
