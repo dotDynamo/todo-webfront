@@ -15,3 +15,7 @@ export const createTodo = async (title: string, description: string): Promise<To
   const response = await api.post<Todo>('/todos', { title, description });
   return response.data;
 };
+
+export const deleteTodo = async (id: string): Promise<void> => {
+  await api.delete(`/todos/${id}`);
+};

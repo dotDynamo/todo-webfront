@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { Todo } from '../../types/todo';
-import { getTodos, getTodoById, createTodo } from '../../services/todoService';
+import { getTodos, getTodoById, createTodo, deleteTodo } from '../../services/todoService';
 import TodoCard from '../../components/TodoCard/TodoCard';
 import TodoModal from '../../components/TodoModal/TodoModal';
 import CreateTodoModal from '../../components/CreateTodoModal/CreateTodoModal';
@@ -24,6 +24,12 @@ const Home = () => {
     setTodos((prev) => [...prev, newTodo]);
   };
 
+  const handleDelete = (id: string) => {
+    deleteTodo(id)
+      .then(() => setTodos((prev) => prev.filter((t) => t.id !== id)))
+      .catch(console.error);
+  };
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>
@@ -36,7 +42,11 @@ const Home = () => {
         <ul className={styles.list}>
           {todos.map((todo) => (
             <li key={todo.id}>
-              <TodoCard todo={todo} onClick={() => handleCardClick(todo.id)} />
+              <TodoCard
+                todo={todo}
+                onClick={() => handleCardClick(todo.id)}
+                onDelete={() => handleDelete(todo.id)}
+              />
             </li>
           ))}
         </ul>
