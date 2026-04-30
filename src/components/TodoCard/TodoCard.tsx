@@ -3,6 +3,7 @@ import styles from './TodoCard.module.css';
 
 export interface TodoCardProps {
   todo: Todo;
+  onClick?: () => void;
 }
 
 const formatDate = (dateStr: string) =>
@@ -12,9 +13,12 @@ const formatDate = (dateStr: string) =>
     year: 'numeric',
   });
 
-const TodoCard = ({ todo }: TodoCardProps) => {
+const TodoCard = ({ todo, onClick }: TodoCardProps) => {
   return (
-    <div className={[styles.card, todo.completed ? styles.cardCompleted : ''].filter(Boolean).join(' ')}>
+    <div
+      className={[styles.card, todo.completed ? styles.cardCompleted : '', onClick ? styles.clickable : ''].filter(Boolean).join(' ')}
+      onClick={onClick}
+    >
       <div className={styles.header}>
         <h3 className={[styles.title, todo.completed ? styles.titleCompleted : ''].filter(Boolean).join(' ')}>
           {todo.title}
