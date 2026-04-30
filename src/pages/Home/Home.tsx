@@ -1,22 +1,27 @@
 import { useEffect, useState } from 'react';
 import type { Todo } from '../../types/todo';
-import { getTodos, getTodoById } from '../../services/todoService';
+import { getTodos, getTodoById, createTodo } from '../../services/todoService';
 import TodoCard from '../../components/TodoCard/TodoCard';
 import TodoModal from '../../components/TodoModal/TodoModal';
+import CreateTodoModal from '../../components/CreateTodoModal/CreateTodoModal';
 import styles from './Home.module.css';
 
 const Home = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   useEffect(() => {
     getTodos().then(setTodos).catch(console.error);
   }, []);
 
   const handleCardClick = (id: string) => {
-    getTodoById(id)
-      .then(setSelectedTodo)
-      .catch(console.error);
+    getTodoById(id).then(setSelectedTodo).catch(console.error);
+  };
+
+  const handleCreate = async (title: string, description: string) => {
+    const newTodo = await createTodo(title, description);
+    setTodos((prev) => [...prev, newTodo]);
   };
 
   return (
@@ -37,12 +42,19 @@ const Home = () => {
         </ul>
       )}
 
-      <button className={styles.fab} aria-label="Nueva tarea">
+      <button className={styles.fab} aria-label="Nueva tarea" onClick={() => setShowCreateModal(true)}>
         +
       </button>
 
       {selectedTodo && (
         <TodoModal todo={selectedTodo} onClose={() => setSelectedTodo(null)} />
+      )}
+
+      {showCreateModal && (
+        <CreateTodoModal
+          onClose={() => setShowCreateModal(false)}
+          onSubmit={handleCreate}
+        />
       )}
     </div>
   );
