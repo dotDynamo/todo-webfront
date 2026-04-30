@@ -1,62 +1,80 @@
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { auth } from "../../firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { useState, type SyntheticEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '../../components/Button/Button';
+import { Input } from '../../components/Input/Input';
+import { login } from '../../services/auth/authService';
+import styles from './Login.module.css';
 
 export default function Login() {
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const handleLogin = async () => {
+  const handleSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     if (!email || !password) {
-      alert("Completa todos los campos");
+      setError('Completa todos los campos');
       return;
     }
 
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
-      const token = await userCredential.user.getIdToken();
-
-      localStorage.setItem("token", token);
-
-      console.log("Usuario logueado:", userCredential.user);
-      console.log("Token:", token);
-
-      navigate("/home");
-    } catch (error: any) {
-      console.log("Error en login:", error.message);
-      alert("Correo o contraseña incorrectos");
+      setError('');
+      const token = await login(email, password);
+      localStorage.setItem('token', token);
+      navigate('/home');
+    } catch (err: any) {
+      if (
+        err.code === 'auth/invalid-credential' ||
+        err.code === 'auth/wrong-password' ||
+        err.code === 'auth/user-not-found'
+      ) {
+        setError('Correo o contraseña incorrectos');
+      } else if (err.code === 'auth/invalid-email') {
+        setError('Ingresa un correo válido');
+      } else if (err.response?.status === 401) {
+        setError('Token inválido');
+      } else {
+        setError('Ocurrió un error');
+      }
     }
   };
 
   return (
-    <div>
-      <h2>Login</h2>
+    <div className={styles.wrapper}>
+      <div className={styles.card}>
+        <div className={styles.left}>
+          <h1 className={styles.title}>BIENVENIDO</h1>
 
-      <input
-        type="email"
-        placeholder="Correo"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+          <form className={styles.form} onSubmit={handleSubmit}>
+            <Input
+              label="Correo"
+              type="email"
+              autoComplete="username"
+              placeholder="ejemplo@correo.com"
+              value={email}
+              onChange={(e) => setEmail(e.currentTarget.value)}
+            />
 
-      <input
-        type="password"
-        placeholder="Contraseña"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+            <Input
+              label="Contraseña"
+              type="password"
+              autoComplete="current-password"
+              showPasswordToggle
+              value={password}
+              onChange={(e) => setPassword(e.currentTarget.value)}
+            />
 
-      <button onClick={handleLogin}>
-        Iniciar sesión
-      </button>
+            {error && <p className={styles.error}>{error}</p>}
+
+            <Button type="submit" label="INICIAR SESIÓN" className={styles.submitBtn} />
+          </form>
+        </div>
+
+        <div className={styles.right} />
+      </div>
     </div>
   );
 }

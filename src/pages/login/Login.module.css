@@ -1,0 +1,60 @@
+.wrapper {
+  min-height: 100vh;
+  width: 100vw;
+  background: #1e3a5f;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 32px;
+  box-sizing: border-box;
+}
+
+.card {
+  width: 1080px;
+  max-width: 100%;
+  height: 640px;
+  background: #ffffff;
+  border-radius: 28px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 48% 52%;
+}
+
+.left {
+  padding: 60px 58px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.title {
+  font-size: 48px;
+  font-weight: 700;
+  color: #1e3a5f;
+  margin: 0 0 40px;
+  line-height: 1;
+}
+
+.form {
+  width: 100%;
+  max-width: 330px;
+}
+
+.error {
+  text-align: center;
+  font-size: 14px;
+  color: #dc2626;
+  font-weight: 500;
+  margin: 0 0 8px;
+}
+
+.submitBtn {
+  width: 100%;
+  height: 46px;
+  margin-top: 8px;
+  border-radius: 10px;
+}
+
+.right {
+  background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+}
